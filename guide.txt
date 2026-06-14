@@ -1,0 +1,15 @@
+Step 2: Select the Correct Python Interpreter
+VS Code needs to know it should use the Python engine inside your venv sandbox, not your global computer Python.
+
+Press Ctrl + Shift + P on your keyboard to open the VS Code Command Palette.
+
+Type Python: Select Interpreter and click on it.
+
+Look for the option that points to your virtual environment. It will look like:
+Python 3.13.x ('venv': ./venv/Scripts/python.exe)
+
+Click on it. This links VS Code directly to your isolated workspace setup.
+
+
+
+Step 3: Open an Integrated TerminalGo to the top menu of VS Code and click Terminal $\rightarrow$ New Terminal (or press Ctrl +   (backtick)).Look at the right side of the terminal panel that pops up at the bottom. It will likely say cmd or powershell.Check for Activation: Because you selected the interpreter in Step 2, VS Code should automatically activate your virtual environment for you. You will know it worked if you see (venv) sitting right at the beginning of your terminal command line!Note: If you don't see (venv), simply type .\venv\Scripts\activate in that terminal and press Enter.

@@ -1,0 +1,13 @@
+# FastAPI Web Framework & Server
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+python-multipart==0.0.12
+
+# Modern Snowflake Database Connectivity (Compatible with Python 3.13)
+snowflake-connector-python==3.18.0
+
+# Audio Manipulation Helper
+moviepy==1.0.3
+
+# Environment Variable & Security Utilities
+python-dotenv==1.0.1

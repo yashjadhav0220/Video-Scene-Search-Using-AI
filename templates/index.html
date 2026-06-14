@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YashFlix - Cinematic Video Search</title>
+    <style>
+      :root {
+        /* 🎨 Sleek Charcoal/Grey Theme Modification */
+        --bg-main: #1f232b; /* Elegant deep slate grey */
+        --card-bg: #16191f; /* Slightly darker grey for the containers to create contrast */
+        --card-border: #2d323f; /* Soft border separator */
+        --accent-color: #e50914; /* Your red streaming accent remains vibrant */
+        --accent-hover: #b80710;
+        --text-main: #ffffff;
+        --text-muted: #aaaaaa;
+        --input-bg: #22252e;
+      }
+
+      body {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        background-color: var(
+          --bg-main
+        ); /* Automatically applies your new deep grey */
+        color: var(--text-main);
+        margin: 0;
+        padding: 2rem;
+        position: relative;
+        min-height: 100vh;
+        box-sizing: border-box;
+      }
+
+      /* 📷 TOP CORNER IMAGE SLOTS */
+      .corner-image-slot {
+        position: absolute;
+        top: 1.5rem;
+        width: 100px;
+        height: 50px;
+        border: 1px dashed #444;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--card-bg);
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        overflow: hidden;
+      }
+      .slot-left {
+        left: 2rem;
+      }
+      .slot-right {
+        right: 2rem;
+      }
+      .corner-image-slot img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        mix-blend-mode: screen;
+      }
+
+      .container {
+        max-width: 1400px; /* Expanded from 1100px to accommodate side-by-side design beautifully */
+        margin: 0 auto;
+        padding-top: 2rem;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      /* 🎥 BRANDING WITH STREAMING ICON */
+      .brand-title-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 0.5rem;
+      }
+
+      .brand-icon {
+        width: 42px;
+        height: 42px;
+        background-color: var(--accent-color);
+        border-radius: 10px;
+        position: relative;
+        display: inline-block;
+        box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
+      }
+
+      /* YouTube-style inner play triangle */
+      .brand-icon::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 55%;
+        transform: translate(-50%, -50%);
+        border-width: 9px 0 9px 15px;
+        border-style: solid;
+        border-color: transparent transparent transparent #ffffff;
+      }
+
+      h1 {
+        margin: 0;
+        color: var(--text-main);
+        font-size: 2.8rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+      }
+
+      p.subtitle {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        margin: 0.5rem 0 0 0;
+        font-weight: 300;
+      }
+
+      /* 📐 SIDE-BY-SIDE DUAL COLUMN GRID LAYOUT */
+      .center-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Splitting workspace into two perfectly matching columns */
+        gap: 2rem;
+        align-items: start;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      /* Responsive fallback for smaller displays */
+      @media (max-width: 992px) {
+        .center-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .panel {
+        background-color: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        border: 1px solid var(--card-border);
+        width: 100%;
+        box-sizing: border-box;
+        scroll-margin-top: 20px;
+        min-height: 520px; /* Keeps panels visually balanced side-by-side */
+      }
+
+      h2 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid var(--accent-color);
+        padding-left: 12px;
+        letter-spacing: 0.5px;
+      }
+
+      .upload-container {
+        background: #0d0d0d;
+        border: 1px solid var(--card-border);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .upload-zone {
+        display: flex;
+        gap: 12px;
+      }
+
+      input[type="file"],
+      input[type="text"] {
+        flex: 1;
+        background: var(--input-bg);
+        border: 1px solid var(--card-border);
+        color: white;
+        padding: 14px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        transition: border-color 0.2s;
+        min-width: 0; /* Prevents flex items from busting card boundaries */
+      }
+
+      input[type="text"]:focus {
+        outline: none;
+        border-color: var(--accent-color);
+      }
+
+      /* 🟥 PREMIUM PLATFORM BUTTONS */
+      button {
+        background-color: var(--accent-color);
+        color: white;
+        border: none;
+        padding: 14px 24px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 4px 12px rgba(229, 9, 20, 0.2);
+        white-space: nowrap;
+      }
+
+      button:hover {
+        background-color: var(--accent-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(229, 9, 20, 0.4);
+      }
+
+      video {
+        width: 100%;
+        border-radius: 8px;
+        background: #000;
+        border: 1px solid var(--card-border);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      }
+
+      .search-zone {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 1.5rem;
+      }
+
+      #statusLog {
+        font-size: 0.9rem;
+        color: var(--accent-color);
+        margin-bottom: 1.5rem;
+        min-height: 20px;
+        font-weight: 500;
+      }
+
+      .results-scroll {
+        max-height: 420px; /* Adjusted slightly to sit neatly alongside the video player framework */
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        padding-right: 6px;
+      }
+
+      /* Custom scrollbar to mimic modern apps */
+      .results-scroll::-webkit-scrollbar {
+        width: 6px;
+      }
+      .results-scroll::-webkit-scrollbar-thumb {
+        background-color: #333;
+        border-radius: 4px;
+      }
+
+      .result-card {
+        background: #0d0d0d;
+        border: 1px solid var(--card-border);
+        border-radius: 8px;
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: all 0.2s;
+      }
+
+      .result-card:hover {
+        border-color: #444;
+        background: #111111;
+      }
+
+      .card-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      .card-text {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #e2e8f0;
+        background: rgba(255, 255, 255, 0.03);
+        padding: 10px 14px;
+        border-radius: 6px;
+        border-left: 3px solid var(--accent-color);
+      }
+
+      .jump-btn {
+        align-self: flex-end;
+        background: #181818;
+        color: #ffffff;
+        border: 1px solid #444;
+        padding: 8px 18px;
+        font-size: 0.85rem;
+        box-shadow: none;
+      }
+
+      .jump-btn:hover {
+        background: var(--accent-color);
+        border-color: var(--accent-color);
+        color: white;
+        box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="corner-image-slot slot-left">
+      <img
+        src="http://127.0.0.1:8000/images/snowflake_image_logo_2.png"
+        alt="Snowflake Logo"
+        onerror="this.style.display = 'none'"
+      />
+    </div>
+
+    <div class="corner-image-slot slot-right">
+      <img
+        src="http://127.0.0.1:8000/images/xalta_logo.png"
+        alt="Right Logo Placeholder"
+        onerror="this.style.display = 'none'"
+      />
+    </div>
+
+    <div class="container">
+      <header>
+        <div class="brand-title-wrap">
+          <div class="brand-icon"></div>
+          <h1>YashFlix.ai</h1>
+        </div>
+        <p class="subtitle">
+          Instantly streaming the exact moments you're looking for.
+        </p>
+      </header>
+
+      <div class="center-layout">
+        <div class="panel" id="mediaCenterPanel">
+          <h2>🎬 Media Center</h2>
+
+          <div class="upload-container">
+            <span
+              style="
+                font-size: 0.8rem;
+                color: var(--text-muted);
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+              "
+              >Ingest New Session Asset</span
+            >
+            <div class="upload-zone">
+              <input type="file" id="videoFileInput" accept=".mp4" />
+              <button id="uploadButton" onclick="handleVideoUpload()">
+                Upload Video
+              </button>
+            </div>
+          </div>
+
+          <video id="videoPlayer" controls>
+            <source id="videoSource" src="" type="video/mp4" />
+            Your browser configuration doesn't support basic HTML5 video
+            components.
+          </video>
+        </div>
+
+        <div class="panel">
+          <h2>🔍 Instant Semantic Search</h2>
+          <div class="search-zone">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Type a meeting concept or topic you remember..."
+            />
+            <button onclick="handleSemanticSearch()">Search Video</button>
+          </div>
+
+          <div id="statusLog">
+            System standing by... Ready to scan audio timeline parameters.
+          </div>
+          <div id="resultsContainer" class="results-scroll"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const BACKEND_URL = "http://127.0.0.1:8000";
+
+      function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+      }
+
+      async function handleVideoUpload() {
+        console.log("🎬 [UPLOAD] handleVideoUpload triggered.");
+        const fileInput = document.getElementById("videoFileInput");
+        const statusLog = document.getElementById("statusLog");
+        const uploadButton = document.getElementById("uploadButton");
+
+        if (!fileInput.files[0]) {
+          console.warn("⚠️ [UPLOAD] No file selected by the user.");
+          alert("Please select an .mp4 file to process first.");
+          return;
+        }
+
+        console.log(
+          `📁 [UPLOAD] Selected file: Name=${fileInput.files[0].name}, Size=${fileInput.files[0].size} bytes`,
+        );
+        const formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+
+        // 🔄 STATUS UPDATE 1: Active Ingestion & Processing Mode
+        statusLog.innerText =
+          "⏳ Processing video: Grab your coffee while we get things ready for you...";
+        statusLog.style.color = "#ffcc00"; // Amber alert color
+        uploadButton.disabled = true; // Avoid duplicate processing double clicks
+        uploadButton.innerText = "Processing...";
+
+        try {
+          const response = await fetch(`${BACKEND_URL}/api/upload`, {
+            method: "POST",
+            body: formData,
+          });
+
+          console.log(
+            `🛰️ [UPLOAD] Server response network status: ${response.status}`,
+          );
+          const data = await response.json();
+
+          if (!response.ok)
+            throw new Error(data.detail || "Server rejected media ingestion.");
+
+          // 🔄 STATUS UPDATE 2: Transaction is completed in the database
+          statusLog.innerText =
+            "Give me your input and I will give you your favorite moments";
+          statusLog.style.color = "#00ff88"; // Neon Green success metric
+
+          alert(
+            "Video uploaded and database transaction completed successfully!",
+          );
+        } catch (err) {
+          console.error("❌ [UPLOAD ERROR] Pipeline stream failure:", err);
+          statusLog.innerText = `❌ Ingestion Interrupted: ${err.message}`;
+          statusLog.style.color = "var(--accent-color)";
+        } finally {
+          uploadButton.disabled = false;
+          uploadButton.innerText = "Upload Video";
+        }
+      }
+
+      async function handleSemanticSearch() {
+        const queryText = document.getElementById("searchInput").value;
+        const statusLog = document.getElementById("statusLog");
+        const container = document.getElementById("resultsContainer");
+
+        console.log(
+          `🔍 [SEARCH] handleSemanticSearch fired. Raw Input Query: "${queryText}"`,
+        );
+
+        if (!queryText.trim()) {
+          console.warn(
+            "⚠️ [SEARCH] Empty parameter submitted. Aborting search routine.",
+          );
+          return;
+        }
+
+        statusLog.innerText = "🧠 Understanding your request...";
+        statusLog.style.color = "var(--accent-color)"; // Reset color back to default theme color
+        container.innerHTML = "";
+
+        try {
+          const response = await fetch(
+            `${BACKEND_URL}/api/search?query=${encodeURIComponent(queryText)}`,
+          );
+          console.log(
+            `🛰️ [SEARCH] Vector index response status: ${response.status}`,
+          );
+
+          const data = await response.json();
+          console.log("📦 [SEARCH] Complete response array:", data);
+
+          if (!response.ok)
+            throw new Error(
+              data.detail ||
+                "Server failed to process semantic comparison maps.",
+            );
+
+          if (!data.results || data.results.length === 0) {
+            console.warn(
+              "🤷 [SEARCH] Similarity check completed but matched 0 vectors.",
+            );
+            statusLog.innerText =
+              "🤷 No close semantic matches identified in the active workspace context.";
+            return;
+          }
+
+          statusLog.innerText = `🎯 Generated matches loaded. Total unique records mapped: ${data.results.length}`;
+
+          data.results.forEach((item, index) => {
+            console.log(
+              `📋 [MATCH #${index + 1}] Target: "${item.video_name}" at Time: ${item.timestamp_seconds}s (${formatTime(item.timestamp_seconds)})`,
+            );
+
+            const card = document.createElement("div");
+            card.className = "result-card";
+            card.innerHTML = `
+                <div class="card-meta">
+                    <span>📁 ${item.video_name.substring(0, 50)}...</span>
+                </div>
+                <div class="card-text">"${item.matched_text}"</div>
+                <button class="jump-btn" onclick="snapVideoToTimeline('${item.video_name}', ${item.timestamp_seconds})">
+                    ▶️ Play Clip (${formatTime(item.timestamp_seconds)})
+                </button>
+            `;
+            container.appendChild(card);
+          });
+        } catch (err) {
+          console.error("❌ [SEARCH ERROR] Processing exception caught:", err);
+          statusLog.innerText = `❌ Query Processing Error: ${err.message}`;
+        }
+      }
+
+      // 🎬 BULLETPROOF TWIN-LOCK JUMP CONTROLLER
+      function snapVideoToTimeline(videoName, totalSeconds) {
+        console.log(
+          `\n⚡ =========================================================`,
+        );
+        console.log(
+          `🎬 [JUMP TRIGGERED] Target Asset: "${videoName}" | Seek Coordinate: ${totalSeconds} seconds`,
+        );
+
+        const player = document.getElementById("videoPlayer");
+        const source = document.getElementById("videoSource");
+        const statusLog = document.getElementById("statusLog");
+        const mediaCenterPanel = document.getElementById("mediaCenterPanel");
+
+        const mediaUrl = `${BACKEND_URL}/static/videos/${videoName}`;
+        const cacheBustedUrl = `${mediaUrl}?t=${new Date().getTime()}`;
+
+        mediaCenterPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        function forceTimeJump() {
+          const targetTime = parseFloat(totalSeconds);
+          console.log(
+            `🚀 [PLAYHEAD ENGINE] Forcing jump attempt to: ${targetTime}s (Current: ${player.currentTime}s)`,
+          );
+
+          player
+            .play()
+            .then(() => {
+              player.currentTime = targetTime;
+            })
+            .catch((err) => {
+              console.warn(
+                "⚠️ Autoplay interrupted, forcing coordinate assignment anyway:",
+                err,
+              );
+              player.currentTime = targetTime;
+            });
+
+          let attempts = 0;
+          const checker = setInterval(() => {
+            attempts++;
+            if (Math.abs(player.currentTime - targetTime) < 0.5) {
+              console.log(
+                `🎯 [SUCCESS] Playhead confirmed locked at coordinate: ${player.currentTime}s`,
+              );
+              statusLog.innerText = `🎬 Navigated to asset location timestamp: [${formatTime(totalSeconds)}]`;
+              statusLog.style.color = "var(--text-main)";
+              clearInterval(checker);
+            } else if (attempts > 15) {
+              console.warn("⚠️ [TIMEOUT] Scrubber tracking check timed out.");
+              clearInterval(checker);
+            } else {
+              player.currentTime = targetTime;
+            }
+          }, 100);
+        }
+
+        if (!source.src.includes(videoName)) {
+          console.log(
+            `🔄 [JUMP ROUTINE] Asset names mismatch. Re-mounting stream path.`,
+          );
+          source.src = cacheBustedUrl;
+
+          player.onloadedmetadata = function () {
+            console.log(
+              "🎯 [HTML5 EVENT] Metadata compiled. Executing playhead jump layout sequence.",
+            );
+            forceTimeJump();
+            player.onloadedmetadata = null;
+          };
+
+          player.load();
+        } else {
+          console.log(
+            `⚡ [JUMP ROUTINE] Asset matches active deck. Executing quick jump mechanics.`,
+          );
+          forceTimeJump();
+        }
+      }
+    </script>
+  </body>
+</html>

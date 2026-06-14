@@ -1,0 +1,16 @@
+# Ignore Python virtual environments
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Ignore secure environment variables (NEVER upload your keys!)
+.env
+
+# Ignore heavy video/audio files or localized cache data
+*.mp4
+*.mp3
+*.wav
+downloads/
+output/
+.DS_Store
